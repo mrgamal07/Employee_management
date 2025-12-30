@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Employee | EMS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            background-color: #212529 !important;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+        .sidebar .nav-link {
+            color: #adb5bd;
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            margin: 0.25rem 0;
+        }
+        .sidebar .nav-link:hover {
+            background-color: #495057;
+            color: #fff;
+        }
+        .sidebar .nav-link.active {
+            background-color: #0d6efd !important;
+            color: #fff !important;
+        }
+        main {
+            margin-left: 0;
+            padding-left: 1rem;
+        }
+        @media (min-width: 768px) {
+            main {
+                margin-left: 25%;
+            }
+        }
+        @media (min-width: 992px) {
+            main {
+                margin-left: 16.666667%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-3 col-lg-2 d-md-block bg-dark sidebar">
+                <div class="position-sticky pt-3">
+                    <div class="text-center mb-4">
+                        <h4 class="text-white">EMS PRO</h4>
+                    </div>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link text-white" th:href="@{/adminDashboard}">
+                                <span>📊 Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active text-white bg-primary rounded" th:href="@{/admin/employees}">
+                                <span>👥 Employees</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" th:href="@{/admin/departments}">
+                                <span>🏢 Departments</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" th:href="@{/admin/activity-logs}">
+                                <span>📋 Activity Logs</span>
+                            </a>
+                        </li>
+                        <li class="nav-item mt-3">
+                            <a class="nav-link text-white" href="#" onclick="logout()">
+                                <span>🚪 Logout</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <div>
+                        <p class="text-muted mb-0">Master File</p>
+                        <h1 class="h2" th:text="'Details for: ' + ${employee.name}">Employee Details</h1>
+                    </div>
+                    <button onclick="goToManageEmployees()" class="btn btn-secondary">
+                        ← Back to List
+                    </button>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center gap-4">
+                            <div class="flex-shrink-0">
+                                <div class="rounded-circle overflow-hidden border border-3" style="width: 150px; height: 150px;">
+                                    <img th:if="${employee.photo != null}" th:src="@{'/uploads/' + ${employee.photo}}" alt="Photo"
+                                        class="img-fluid w-100 h-100" style="object-fit: cover;">
+                                    <div th:if="${employee.photo == null}" class="d-flex align-items-center justify-content-center bg-secondary w-100 h-100">
+                                        <span class="display-3">👤</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h2 th:text="${employee.name}" class="mb-2">Name</h2>
+                                <div class="d-flex gap-2 align-items-center">
+                                    <span th:text="${employee.designation}" class="badge bg-primary"></span>
+                                    <span th:text="${employee.employeeCode}" class="text-muted"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <th class="w-25">Personal Info</th>
+                                    <td>
+                                        <strong th:text="${employee.gender}"></strong> (Born: <span th:text="${#dates.format(employee.dob, 'MMM dd, yyyy')}"></span>)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Contact</th>
+                                    <td>
+                                        <span th:text="${employee.email}"></span><br>
+                                        <span th:text="${employee.phone}" class="text-muted"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Department</th>
+                                    <td>
+                                        <span th:text="${employee.departmentName}"></span>
+                                        <span class="text-muted" th:text="'(ID: ' + ${employee.departmentId} + ')'"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Employment Type</th>
+                                    <td th:text="${employee.designationType}"></td>
+                                </tr>
+                                <tr>
+                                    <th>Working Shift</th>
+                                    <td th:text="${employee.shiftType}"></td>
+                                </tr>
+                                <tr>
+                                    <th>Salary</th>
+                                    <td th:text="'$' + ${employee.salary}" class="text-success fw-bold"></td>
+                                </tr>
+                                <tr>
+                                    <th>Joined Date</th>
+                                    <td th:text="${#dates.format(employee.joinDate, 'MMM dd, yyyy')}"></td>
+                                </tr>
+                                <tr th:if="${employee.resignationDate}">
+                                    <th>Resignation Date</th>
+                                    <td th:text="${#dates.format(employee.resignationDate, 'MMM dd, yyyy')}" class="text-danger"></td>
+                                </tr>
+                                <tr>
+                                    <th>Current Status</th>
+                                    <td>
+                                        <span th:text="${employee.presentStatus}" th:classappend="${employee.presentStatus == 'PRESENT' ? 'badge bg-success' : 'badge bg-danger'}"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Education</th>
+                                    <td th:text="${employee.education}"></td>
+                                </tr>
+                                <tr>
+                                    <th>Company</th>
+                                    <td th:text="${employee.company}"></td>
+                                </tr>
+                                <tr>
+                                    <th>Address</th>
+                                    <td th:text="${employee.address}" class="text-muted"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/dashboard.js}"></script>
+</body>
+
+</html>

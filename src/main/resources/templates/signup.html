@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up | EMS</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+  <div class="container">
+    <div class="row justify-content-center align-items-center min-vh-100">
+      <div class="col-md-5">
+        <div class="card shadow">
+          <div class="card-body p-5">
+            <h2 class="card-title text-center mb-3">Create Account</h2>
+            <p class="text-center text-muted mb-4">Join our team today</p>
+
+            <form id="signupForm">
+              <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" class="form-control" id="username" placeholder="Choose a username" required>
+              </div>
+
+              <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" placeholder="••••••••" required>
+              </div>
+
+              <div class="mb-3">
+                <label for="employeeSelect" class="form-label">Link Employee Profile</label>
+                <select class="form-select" id="employeeSelect" required>
+                  <option value="">-- Select Profile --</option>
+                </select>
+              </div>
+
+              <button type="submit" id="signupBtn" class="btn btn-primary w-100">Sign Up</button>
+            </form>
+
+            <p class="text-center mt-4">
+              <small>Already have an account? <a th:href="@{/login}" class="text-decoration-none">Login</a></small>
+            </p>
+            <div id="signupError" class="alert alert-danger d-none mt-3"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script th:src="@{/js/signup.js}"></script>
+</body>
+
+</html>

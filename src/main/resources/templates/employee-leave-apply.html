@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply for Leave | EMS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            background-color: #212529 !important;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+        .sidebar .nav-link {
+            color: #adb5bd;
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            margin: 0.25rem 0;
+        }
+        .sidebar .nav-link:hover {
+            background-color: #495057;
+            color: #fff;
+        }
+        .sidebar .nav-link.active {
+            background-color: #0d6efd !important;
+            color: #fff !important;
+        }
+        main {
+            margin-left: 0;
+            padding-left: 1rem;
+        }
+        @media (min-width: 768px) {
+            main {
+                margin-left: 25%;
+            }
+        }
+        @media (min-width: 992px) {
+            main {
+                margin-left: 16.666667%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-3 col-lg-2 d-md-block bg-dark sidebar">
+                <div class="position-sticky pt-3">
+                    <div class="text-center mb-4">
+                        <h4 class="text-white">EMS PRO</h4>
+                    </div>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link text-white" th:href="@{/employee/dashboard}">
+                                <span>🏠 Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active text-white bg-primary rounded" th:href="@{/employee/leave/apply}">
+                                <span>📝 Apply Leave</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" th:href="@{/employee/leave/history}">
+                                <span>📅 Leave History</span>
+                            </a>
+                        </li>
+                        <li class="nav-item mt-3">
+                            <a class="nav-link text-white" href="#" onclick="logout()">
+                                <span>🚪 Logout</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <div>
+                        <p class="text-muted mb-0">Employee Portal</p>
+                        <h1 class="h2">Apply for Leave</h1>
+                    </div>
+                    <button onclick="goToEmployeeDashboard()" class="btn btn-secondary">
+                        ← Back to Dashboard
+                    </button>
+                </div>
+
+                <div th:if="${message}" th:classappend="${messageType == 'success' ? 'alert-success' : 'alert-danger'}" class="alert mb-4" role="alert">
+                    <p th:text="${message}" class="mb-0"></p>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <form th:action="@{/employee/leave/apply}" th:object="${leaveRequest}" method="post" class="needs-validation" novalidate>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="leaveType" class="form-label">Leave Type</label>
+                                    <select class="form-select" id="leaveType" th:field="*{leaveType}" required>
+                                        <option value="">Select Leave Type</option>
+                                        <option value="CASUAL">Casual</option>
+                                        <option value="SICK">Sick</option>
+                                        <option value="FESTIVAL">Festival</option>
+                                    </select>
+                                    <div class="invalid-feedback">Please select a leave type.</div>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="startDate" class="form-label">Start Date</label>
+                                    <input type="date" class="form-control" id="startDate" th:field="*{startDate}" required>
+                                    <div class="invalid-feedback">Please select a start date.</div>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="endDate" class="form-label">End Date</label>
+                                    <input type="date" class="form-control" id="endDate" th:field="*{endDate}" required>
+                                    <div class="invalid-feedback">Please select an end date.</div>
+                                </div>
+
+                                <div class="col-12 mb-3">
+                                    <label for="reason" class="form-label">Reason</label>
+                                    <textarea class="form-control" id="reason" th:field="*{reason}" rows="3" required></textarea>
+                                    <div class="invalid-feedback">Please provide a reason for your leave.</div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-end mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg">Submit Application</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        (function() {
+            'use strict';
+            var forms = document.querySelectorAll('.needs-validation');
+            Array.prototype.slice.call(forms).forEach(function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+
+        function goToEmployeeDashboard() {
+            window.location.href = "/employee/dashboard";
+        }
+        function logout() {
+            if (confirm("Are you sure you want to logout?")) {
+                fetch("/auth/logout", {
+                    method: "POST"
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            window.location.href = "/login";
+                        } else {
+                            alert("Logout failed");
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                        alert("An error occurred during logout.");
+                    });
+            }
+        }
+    </script>
+</body>
+
+</html>
